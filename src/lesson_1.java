@@ -15,7 +15,6 @@ public class lesson_1 {
         System.out.println(isNegative(-50));
         helloName("Василий");
         isLeapYear(2100);
-
     }
 
     public static int mathExpression(int a, int b, int c, int d) {
