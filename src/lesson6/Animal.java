@@ -4,24 +4,14 @@ import java.util.Random;
 
 class AnimalApp {
     public static void main(String[] args) {
-        Random random = new Random();
-        int randomLength = random.nextInt(800);
-
-        Animal animal1 = new Animal();
-        Animal animal2 = new Animal();
-        Animal animal3 = new Animal();
 
         Cat cat1 = new Cat();
         Cat cat2 = new Cat();
         Cat cat3 = new Cat();
 
-        Dog dog1 = new Dog(randomLength);
-        Dog dog2 = new Dog(randomLength);
-        Dog dog3 = new Dog(randomLength);
-
-        animal1.jump(100);
-        animal2.run(2);
-        animal3.swim(7);
+        Dog dog1 = new Dog();
+        Dog dog2 = new Dog();
+        Dog dog3 = new Dog();
 
         cat1.jump(3);
         cat2.run(-6);
@@ -38,22 +28,18 @@ class AnimalApp {
     }
 }
 
-public class Animal {
+public abstract class Animal {
 
-    public void run(int length) {
-        System.out.println("Животное попыталось побежать");
-    }
-    public  void swim(int length) {
-        System.out.println("Животное попыталось поплыть");
-    }
-    public void jump(int heiht) {
-        System.out.println("Животное попыталось подпрыгнуть");
-    }
+    abstract void run(int length);
+    abstract void swim(int length);
+    abstract void jump(int height);
+
 }
 
 class Cat extends Animal {
+
     @Override
-    public void run(int length){
+    void run(int length){
         if (length <= 200 && length > 0) {
             System.out.println("Кот побежал на " + length + "м");
         } else if (length > 200) {
@@ -64,7 +50,7 @@ class Cat extends Animal {
     }
 
     @Override
-    public void jump(int heiht) {
+    void jump(int heiht) {
         if (heiht <= 2 && heiht > 0) {
             System.out.println("Кот подпрыгнул на " + heiht + "м");
         } else if (heiht > 2) {
@@ -75,7 +61,7 @@ class Cat extends Animal {
     }
 
     @Override
-    public void swim(int length) {
+    void swim(int length) {
         System.out.println("Кот не умеет плавать");
     }
 }
@@ -83,12 +69,14 @@ class Cat extends Animal {
 class Dog extends Animal {
     int lengthMax;
 
-    public Dog(int lengthMax) {
-        this.lengthMax = lengthMax;
+    public Dog() {
+        Random random = new Random();
+        lengthMax = random.nextInt(200 + 1) + 400;
     }
 
     @Override
-    public void run(int length){
+    void run(int length){
+
         if (length <= lengthMax && length > 0) {
             System.out.println("Собака побежала на " + length + "м");
         } else if (length > lengthMax) {
@@ -99,8 +87,8 @@ class Dog extends Animal {
     }
 
     @Override
-    public void jump(int heiht) {
-        super.jump(heiht);
+    void jump(int heiht) {
+
         if (heiht <= 0.5 && heiht > 0) {
             System.out.println("Собака подпрыгнула на " + heiht + "м");
         } else if (heiht > 0.5) {
@@ -111,8 +99,8 @@ class Dog extends Animal {
     }
 
     @Override
-    public void swim(int length) {
-        super.swim(length);
+    void swim(int length) {
+
         if (length <= 10 && length > 0) {
             System.out.println("Собака проплыла " + length + "м");
         } else if (length > 10) {
