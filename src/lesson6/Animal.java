@@ -4,109 +4,84 @@ import java.util.Random;
 
 class AnimalApp {
     public static void main(String[] args) {
+        Random random = new Random();
+        int number = 5;
 
-        Cat cat1 = new Cat();
-        Cat cat2 = new Cat();
-        Cat cat3 = new Cat();
+        for (int i = 0; i < number; i++) {
+            Cat cat = new Cat();
+            cat.run(random.nextInt(900));
+            cat.swim(random.nextInt(900));
+            cat.jump(random.nextInt(900));
 
-        Dog dog1 = new Dog();
-        Dog dog2 = new Dog();
-        Dog dog3 = new Dog();
-
-        cat1.jump(3);
-        cat2.run(-6);
-        cat2.run(10);
-        cat3.swim(56);
-
-        dog1.jump(1);
-        dog2.run(3);
-        dog1.run(300);
-        dog3.run(1700);
-        dog2.jump(-4);
-        dog3.swim(0);
-        dog3.swim(5);
+            Dog dog = new Dog();
+            dog.run(random.nextInt(900));
+            dog.swim(random.nextInt(900));
+            dog.jump(random.nextInt(900));
+        }
     }
 }
 
 public abstract class Animal {
+    int min = 0;
 
-    abstract void run(int length);
-    abstract void swim(int length);
-    abstract void jump(int height);
+    abstract void run(int value);
 
+    abstract void swim(int value);
+
+    abstract void jump(int value);
+
+    protected void checkValue(int max, int value, String animal) {
+        if (value <= max && value > min) {
+            System.out.println(animal + " на " + value + "м");
+        } else if (value > max) {
+            System.out.println("Введено слишком большое значение");
+        } else {
+            System.out.println("Введено некорректное значение");
+        }
+    }
 }
 
 class Cat extends Animal {
 
     @Override
-    void run(int length){
-        if (length <= 200 && length > 0) {
-            System.out.println("Кот побежал на " + length + "м");
-        } else if (length > 200) {
-            System.out.println("Кот не бегает на такие большие расстояния");
-        } else {
-            System.out.println("Введено некорректное значение длины");
-        }
+    void run(int value) {
+        this.checkValue(200, value, "Кот побежал");
     }
 
     @Override
-    void jump(int heiht) {
-        if (heiht <= 2 && heiht > 0) {
-            System.out.println("Кот подпрыгнул на " + heiht + "м");
-        } else if (heiht > 2) {
-            System.out.println("Кот не прыгает на такую высоту");
-        } else {
-            System.out.println("Введено некорректное значение высоты");
-        }
+    void jump(int value) {
+        this.checkValue(2, value, "Кот прыгнул");
     }
 
     @Override
-    void swim(int length) {
+    void swim(int value) {
         System.out.println("Кот не умеет плавать");
     }
 }
 
 class Dog extends Animal {
-    int lengthMax;
+    int lengthMaxRun;
+    int lengthMaxSwim;
 
     public Dog() {
         Random random = new Random();
-        lengthMax = random.nextInt(200 + 1) + 400;
+        lengthMaxRun = random.nextInt(200 + 1) + 400;
+        lengthMaxSwim = random.nextInt(10 + 1) + 10;
     }
 
     @Override
-    void run(int length){
-
-        if (length <= lengthMax && length > 0) {
-            System.out.println("Собака побежала на " + length + "м");
-        } else if (length > lengthMax) {
-            System.out.println("Собака не бегает на такие большие расстояния");
-        } else {
-            System.out.println("Введено некорректное значение длины");
-        }
+    void run(int value) {
+        this.checkValue(lengthMaxRun, value, "Собака побежала");
     }
 
     @Override
-    void jump(int heiht) {
+    void jump(int value) {
+        this.checkValue(1, value, "Собака прыгнула");
 
-        if (heiht <= 0.5 && heiht > 0) {
-            System.out.println("Собака подпрыгнула на " + heiht + "м");
-        } else if (heiht > 0.5) {
-            System.out.println("Собака не прыгает на такую высоту");
-        } else {
-            System.out.println("Введено некорректное значение высоты");
-        }
     }
 
     @Override
-    void swim(int length) {
-
-        if (length <= 10 && length > 0) {
-            System.out.println("Собака проплыла " + length + "м");
-        } else if (length > 10) {
-            System.out.println("Собака не плавает на такое расстояние");
-        } else {
-            System.out.println("Введено некорректное значение длины");
-        }
+    void swim(int value) {
+        this.checkValue(lengthMaxRun, value, "Собака поплыла");
     }
 }
