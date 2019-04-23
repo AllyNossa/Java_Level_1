@@ -7,44 +7,20 @@ import java.awt.event.ActionListener;
 
 
 public class MyWindow extends JFrame {
+    JTextArea jTextArea = new JTextArea();
+    SubWindow subWindow;
     public MyWindow() {
-        JTextArea jTextArea = new JTextArea();
         jTextArea.setEditable(false);
         JButton button1 = new JButton("Нажми меня");
         add(button1, BorderLayout.SOUTH);
+
+        subWindow = new SubWindow(this);
 
         button1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 jTextArea.setText("");
-
-                JFrame jFrame2 = new JFrame();
-                jFrame2.setVisible(true);
-                jFrame2.setBounds(500, 300, 400, 400);
-
-                JPanel jPanel = new JPanel(new GridLayout(4, 1));
-                jFrame2.add(jPanel);
-
-                JTextField jTextField1 = new JTextField();
-                JTextField jTextField2 = new JTextField();
-                JTextField jTextField3 = new JTextField();
-
-                jPanel.add(jTextField1);
-                jPanel.add(jTextField2);
-                jPanel.add(jTextField3);
-
-                JButton button2 = new JButton("Заполнить ФИО");
-                jPanel.add(button2, BorderLayout.SOUTH);
-
-                button2.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        jTextArea.append(jTextField1.getText() + "\n");
-                        jTextArea.append(jTextField2.getText()+ "\n");
-                        jTextArea.append(jTextField3.getText()+ "\n");
-                        jFrame2.setVisible(false);
-                    }
-                });
+                subWindow.setVisible(true);
             }
         });
 
@@ -52,6 +28,44 @@ public class MyWindow extends JFrame {
         setBounds(500, 300, 400, 400);
         setVisible(true);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+}
+
+class SubWindow extends JFrame {
+    MyWindow myWindow;
+    public SubWindow(MyWindow myWindow) {
+        this.myWindow = myWindow;
+
+        JPanel jPanel = new JPanel(new GridLayout(4, 1));
+
+        JTextField jTextField1 = new JTextField();
+        JTextField jTextField2 = new JTextField();
+        JTextField jTextField3 = new JTextField();
+
+        jPanel.add(jTextField1);
+        jPanel.add(jTextField2);
+        jPanel.add(jTextField3);
+
+        add(jPanel);
+
+        JButton button2 = new JButton("Заполнить ФИО");
+        jPanel.add(button2, BorderLayout.SOUTH);
+
+        button2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                myWindow.jTextArea.append(jTextField1.getText() + "\n");
+                myWindow.jTextArea.append(jTextField2.getText() + "\n");
+                myWindow.jTextArea.append(jTextField3.getText() + "\n");
+                setVisible(false);
+                jTextField1.setText("");
+                jTextField2.setText("");
+                jTextField3.setText("");
+            }
+        });
+
+        setVisible(true);
+        setBounds(500, 300, 400, 400);
     }
 }
 
