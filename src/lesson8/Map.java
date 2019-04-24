@@ -7,12 +7,13 @@ import java.awt.event.MouseEvent;
 import java.util.Random;
 
 public class Map extends JPanel {
-    Player player;
     public static final int MODE_H_V_A = 0;
     public static final int MODE_H_V_H = 1;
-    private static final char NOT_SIGN = '*';
+    private static final int NOT_SIGN = 0;
+    private static final int DOT_HUMAN = 1;
+    private static final int DOT_AI = 2;
 
-    char[][] field;
+    int[][] field;
     int fieldSizeX;
     int fieldSizeY;
 
@@ -31,19 +32,23 @@ public class Map extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                update(e, player);
+                super.mouseReleased(e);
+                gameProcess(e);
             }
         });
-
-        modeAgainstAI();
     }
 
 
-    void update(MouseEvent e, Player player) {
+    void gameProcess(MouseEvent e) {
 
         cellX = e.getX() / cellWidth;
         cellY = e.getY() / cellHeight;
         System.out.println("x: " + cellX + " y: " + cellY);
+        if (isCellBusy(cellX, cellY)) {
+            field[cellX][cellY] = DOT_HUMAN;
+            repaint();
+        }
+        aiShot();
         repaint();
     }
 
@@ -51,7 +56,7 @@ public class Map extends JPanel {
         this.fieldSizeX = fieldSizeX;
         this.fieldSizeY = fieldSizeY;
         this.winLen = winLen;
-        field = new char[fieldSizeX][fieldSizeY];
+        field = new int[fieldSizeX][fieldSizeY];
         isInitialized = true;
         repaint();
 
@@ -65,24 +70,6 @@ public class Map extends JPanel {
         System.out.println();
     }
 
-    void modeAgainstAI() {
-        Player player = new Player('X');
-        while(true) {
-            AI ai = new AI('O');
-            player.shot(cellX, cellY, this);
-            if (isFieldFull()) {
-                System.out.println("Игра окончена");
-                break;
-            }
-            repaint();
-            ai.aiShot(this);
-            if (isFieldFull()) {
-                System.out.println("Игра окончена");
-                break;
-            }
-            repaint();
-        }
-    }
 
     boolean isCellBusy(int x, int y) {
         if (x < 0 || y < 0 || x > fieldSizeX - 1 || y > fieldSizeY - 1) {
@@ -128,16 +115,16 @@ public class Map extends JPanel {
             int x = i * cellWidth;
             g.drawLine(x, 0, x, panelHeight);
         }
-        for (int i = 0; i < fieldSizeX; i++) {
-            for (int j = 0; j < fieldSizeY; j++) {
+        for (int i = 0; i < fieldSizeY; i++) {
+            for (int j = 0; j < fieldSizeX; j++) {
                 if (field[i][j] != NOT_SIGN) {
-                    if (field[i][j] == 'X') {
+                    if (field[i][j] == DOT_HUMAN) {
                         // Рисуем крестик
                         g.setColor(Color.RED);
                         g.drawLine((i * cellHeight), (j * cellWidth), (i + 1) * cellHeight, (j + 1) * cellWidth);
                         g.drawLine((i + 1) * cellHeight, (j * cellWidth), (i * cellHeight), (j + 1) * cellWidth);
                     }
-                    if (field [i][j] == 'O') {
+                    if (field[i][j] == DOT_AI) {
                         // Рисуем нолик
                         g.setColor(Color.BLUE);
                         g.drawOval((i * cellHeight), (j * cellWidth), cellHeight, cellWidth);
@@ -147,51 +134,17 @@ public class Map extends JPanel {
         }
     }
 
+    void aiShot() {
+        Random random = new Random();
 
-}
-
-class Player {
-    private char sign;
-
-    public Player(char sign) {
-        this.sign = sign;
-    }
-
-    public char getSign() {
-        return sign;
-    }
-
-    void shot (int x, int y, Map map) {
-
-        if (map.isCellBusy(x, y)) {
-            map.field[x][y] = sign;
-        }
-    }
-}
-
-class AI {
-    private char sign;
-    Random random = new Random();
-
-    public AI(char sign) {
-        this.sign = sign;
-    }
-
-    public char getSign() {
-        return sign;
-    }
-
-    void aiShot(Map map) {
-        int x,y;
-        AI ai = new AI('O');
-
+        int x, y;
         do {
-            x = random.nextInt(map.fieldSizeX);
-            y = random.nextInt(map.fieldSizeY);
-        } while (!map.isCellBusy(y,x));
-
-        map.field[x][y] = ai.getSign();
+            x = random.nextInt(this.fieldSizeX);
+            y = random.nextInt(this.fieldSizeY);
+        } while (!this.isCellBusy(y, x));
+        field[x][y] = DOT_AI;
     }
 }
+
 
 
