@@ -40,7 +40,7 @@ public class lesson3_2 {
                     System.out.print(answer[i]);
                 }
             }
-            for (int j = 0; j < 15 - minLength; j++) {
+            for (int j = 0; j < answer.length - minLength; j++) {
                 System.out.print("#");
             }
             System.out.println();
