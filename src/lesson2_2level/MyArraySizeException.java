@@ -1,4 +1,4 @@
-package lesson2_2;
+package lesson2_2level;
 
 public class MyArraySizeException extends Exception {
     public MyArraySizeException(String message) {
