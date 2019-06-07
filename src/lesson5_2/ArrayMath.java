@@ -18,16 +18,6 @@ public class ArrayMath {
         System.out.println("Время с 1 потоком: " + (System.currentTimeMillis() - a));
     }
 
-    synchronized void arraySet(float[] arr) {
-        for (int i = 0; i < arr.length; i++) {
-            arr[i] = 1;
-        }
-
-        for (int i = 0; i < arr.length; i++) {
-            arr[i] = (float) (arr[i] * Math.sin(0.2f + i / 5) * Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
-        }
-    }
-
     static class MyThread implements Runnable {
         float[] arr;
 
@@ -66,18 +56,6 @@ public class ArrayMath {
         System.arraycopy(arr2, 0, arr, HALF, HALF);
 
         System.out.println("Время с 2мя потоками: " + (System.currentTimeMillis() - a));
-        
-        ArrayMath arrayMath = new ArrayMath();
-
-        long b = System.currentTimeMillis();
-
-        new Thread(() -> arrayMath.arraySet(arr1)).start();
-        new Thread(() -> arrayMath.arraySet(arr2)).start();
-
-        System.arraycopy(arr1, 0, arr, 0, HALF);
-        System.arraycopy(arr2, 0, arr, HALF, HALF);
-
-        System.out.println("Время с синхронизацией: " + (System.currentTimeMillis() - b));
     }
 }
 
