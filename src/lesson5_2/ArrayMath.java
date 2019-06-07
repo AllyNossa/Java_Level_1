@@ -18,6 +18,14 @@ public class ArrayMath {
         System.out.println("Время с 1 потоком: " + (System.currentTimeMillis() - a));
     }
 
+    static void waitThreadFinish(Thread thread){
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     static class MyThread implements Runnable {
         float[] arr;
 
@@ -49,8 +57,14 @@ public class ArrayMath {
         System.arraycopy(arr, 0, arr1, 0, HALF);
         System.arraycopy(arr, HALF, arr2, 0, HALF);
 
-        new Thread(new MyThread(arr1)).start();
-        new Thread(new MyThread(arr2)).start();
+        Thread thread1 = new Thread(new MyThread(arr1));
+        Thread thread2 = new Thread(new MyThread(arr2));
+
+        thread1.start();
+        thread2.start();
+
+        waitThreadFinish(thread1);
+        waitThreadFinish(thread2);
 
         System.arraycopy(arr1, 0, arr, 0, HALF);
         System.arraycopy(arr2, 0, arr, HALF, HALF);
