@@ -28,9 +28,11 @@ public class ArrayMath {
 
     static class MyThread implements Runnable {
         float[] arr;
+        float delta;
 
-        public MyThread(float[] arr) {
+        public MyThread(float[] arr, float delta) {
             this.arr = arr;
+            this.delta = delta;
         }
 
         @Override
@@ -40,7 +42,7 @@ public class ArrayMath {
             }
 
             for (int i = 0; i < arr.length; i++) {
-                arr[i] = (float) (arr[i] * Math.sin(0.2f + (i + HALF)/ 5) * Math.cos(0.2f + (i + HALF)/ 5) * Math.cos(0.4f + (i + HALF) / 2)); 
+                arr[i] = (float) (arr[i] * Math.sin(0.2f + (i + delta)/ 5) * Math.cos(0.2f + (i + delta)/ 5) * Math.cos(0.4f + (i + delta) / 2));
             }
         }
     }
@@ -57,8 +59,8 @@ public class ArrayMath {
         System.arraycopy(arr, 0, arr1, 0, HALF);
         System.arraycopy(arr, HALF, arr2, 0, HALF);
 
-        Thread thread1 = new Thread(new MyThread(arr1));
-        Thread thread2 = new Thread(new MyThread(arr2));
+        Thread thread1 = new Thread(new MyThread(arr1, 0));
+        Thread thread2 = new Thread(new MyThread(arr2, HALF));
 
         thread1.start();
         thread2.start();
@@ -72,8 +74,6 @@ public class ArrayMath {
         System.out.println("Время с 2мя потоками: " + (System.currentTimeMillis() - a));
     }
 }
-
-
 
 
 
