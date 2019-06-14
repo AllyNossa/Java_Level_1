@@ -13,7 +13,7 @@ import java.net.Socket;
 
 public class Client extends JFrame {
     private final String SERVER_ADDR = "localhost";
-    private final int SERVER_PORT = 8888;
+    private final int SERVER_PORT = 8189;
 
     private JTextField msgInputField;
     private JTextArea chatArea;
@@ -37,13 +37,11 @@ public class Client extends JFrame {
         setTitle("Клиент");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        // Текстовое поле для вывода сообщений
         chatArea = new JTextArea();
         chatArea.setEditable(false);
         chatArea.setLineWrap(true);
         add(new JScrollPane(chatArea), BorderLayout.CENTER);
 
-        // Нижняя панель с полем для ввода сообщений и кнопкой отправки сообщений
         JPanel bottomPanel = new JPanel(new BorderLayout());
         JButton btnSendMsg = new JButton("Отправить");
         bottomPanel.add(btnSendMsg, BorderLayout.EAST);
@@ -56,6 +54,7 @@ public class Client extends JFrame {
                 sendMessage();
             }
         });
+
         msgInputField.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -63,7 +62,6 @@ public class Client extends JFrame {
             }
         });
 
-        // Настраиваем действие на закрытие окна
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -78,25 +76,24 @@ public class Client extends JFrame {
         });
 
         setVisible(true);
-
     }
 
     private void sendMessage() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (!msgInputField.getText().trim().isEmpty()) {
-                    try {
-                        out.writeUTF(msgInputField.getText());
-                        msgInputField.setText("");
-                        msgInputField.grabFocus();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        JOptionPane.showMessageDialog(null, "Ошибка отправки сообщения");
-                    }
+
+        if (!msgInputField.getText().trim().isEmpty()) {
+            try {
+                out.writeUTF(msgInputField.getText());
+                msgInputField.setText("");
+                msgInputField.grabFocus();
+                if (msgInputField.getText().equalsIgnoreCase("/end") && !socket.isClosed()) {
+                    socket.close();
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Ошибка отправки сообщения");
             }
-        }).start();
+        }
+
 
     }
 
@@ -105,23 +102,23 @@ public class Client extends JFrame {
         in = new DataInputStream(socket.getInputStream());
         out = new DataOutputStream(socket.getOutputStream());
 
-            new Thread(() -> {
-                while (true) {
-                    try {
-                        String messageFromServer = in.readUTF();
-                        if (messageFromServer.equalsIgnoreCase("/end")) {
-                            break;
-                        }
-                        chatArea.append(messageFromServer);
-                        chatArea.append("\n");
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
+        new Thread(() -> {
+            while (!socket.isClosed()) {
+                try {
+                    String messageFromServer = in.readUTF();
+                    if (messageFromServer.equalsIgnoreCase("/end")) {
+                        break;
                     }
-                }
+                    chatArea.append(messageFromServer);
+                    chatArea.append("\n");
 
-            }).start();
-        }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }).start();
+    }
 
     public void closeConnection() {
         try {
@@ -135,7 +132,9 @@ public class Client extends JFrame {
             e.printStackTrace();
         }
         try {
-            socket.close();
+            if (!socket.isClosed()) {
+                socket.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
