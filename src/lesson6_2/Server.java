@@ -36,7 +36,6 @@ public class Server {
                     }
                     System.out.println("UserClient: " + messageClient);
                 }
-                System.out.println("Stop waiting clients requests");
                 System.out.flush();
             }).start();
 
@@ -57,7 +56,7 @@ public class Server {
                         e.printStackTrace();
                     }
                     try {
-                        out.writeUTF("User 2: " + messageFromServer + "\n");
+                        out.writeUTF("Friend: " + messageFromServer);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -67,10 +66,8 @@ public class Server {
                         e.printStackTrace();
                     }
                 }
-                System.out.println("Stop reading from console");
                 System.out.flush();
             }).start();
-
 
         } catch (IOException e) {
             e.printStackTrace();

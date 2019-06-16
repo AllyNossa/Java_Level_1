@@ -28,7 +28,6 @@ public class Client extends JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         prepareGUI();
     }
 
@@ -74,7 +73,6 @@ public class Client extends JFrame {
                 }
             }
         });
-
         setVisible(true);
     }
 
@@ -83,6 +81,8 @@ public class Client extends JFrame {
         if (!msgInputField.getText().trim().isEmpty()) {
             try {
                 out.writeUTF(msgInputField.getText());
+                chatArea.append("Me: " + msgInputField.getText());
+                chatArea.append("\n");
                 msgInputField.setText("");
                 msgInputField.grabFocus();
                 if (msgInputField.getText().equalsIgnoreCase("/end") && !socket.isClosed()) {
@@ -93,8 +93,6 @@ public class Client extends JFrame {
                 JOptionPane.showMessageDialog(null, "Ошибка отправки сообщения");
             }
         }
-
-
     }
 
     private void openConnection() throws IOException {
